@@ -1,0 +1,48 @@
+class Solution {
+    class tuple{
+        int x, y, time;
+        tuple(int x, int y, int time){
+            this.x = x;
+            this.y = y;
+            this.time = time;
+        }
+    }
+    int dx[]= {1,0,-1,0};
+    int dy[]= {0,-1,0,1};
+    public int minTimeToReach(int[][] moveTime) {
+        //BFS+PriorityQueue -> Dijskstra's algo
+        PriorityQueue<tuple> pq = new PriorityQueue<>((x, y) -> x.time - y.time);
+        pq.add(new tuple(0, 0, 0));
+        int n = moveTime.length;
+        int m = moveTime[0].length;
+        while(!pq.isEmpty()){
+            tuple remove = pq.poll();
+            if(moveTime[remove.x][remove.y] == -1)continue;
+            if(remove.x==n-1 && remove.y==m-1) return remove.time;
+            moveTime[remove.x][remove.y] = -1;
+            for(int i=0;i<4;i++){
+                int nx = remove.x+dx[i];
+                int ny = remove.y+dy[i];
+                if(isValid(nx, ny, n, m) && moveTime[nx][ny]!=-1){
+                    if(moveTime[nx][ny] > remove.time){
+                        pq.add(new tuple(nx,ny, moveTime[nx][ny] + 1));
+                    }else{
+                        pq.add(new tuple(nx,ny,remove.time + 1));
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+    private boolean isValid(int x, int y, int n, int m){
+        return x >= 0 && y >= 0 && x < n && y < m;
+    }
+}
+
+/*
+
+
+
+
+
+*/
