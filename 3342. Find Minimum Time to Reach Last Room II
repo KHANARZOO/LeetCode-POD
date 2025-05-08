@@ -1,0 +1,52 @@
+class Solution {
+    class Tuple{
+        int i;
+        int j;
+        int time;
+        int count;
+
+        public Tuple(int i, int j, int time, int count){
+            this.i = i;
+            this.j = j;
+            this.time = time;
+            this.count = count;
+        }
+    }
+    class sortByTime implements Comparator<Tuple>{
+        public int compare(Tuple a, Tuple b){
+            return a.time-b.time;
+        }
+    }
+    int dx[] = {-1,1,0,0};
+    int dy[] = {0,0,-1,1};
+    int newTime = 0;
+    public int minTimeToReach(int[][] moveTime) {
+        PriorityQueue<Tuple> pq = new PriorityQueue<>(new sortByTime());
+        pq.add(new Tuple(0,0,0,1));
+        int n = moveTime.length;
+        int m = moveTime[0].length;
+        while(!pq.isEmpty()){
+            Tuple remove = pq.poll();
+            if(moveTime[remove.i][remove.j] == -1) continue;
+            if(remove.i == n-1 && remove.j == m-1) return remove.time;
+            moveTime[remove.i][remove.j] = -1;
+
+            for(int k=0;k<4;k++){
+                int ni = remove.i + dx[k];
+                int nj = remove.j + dy[k];
+
+                if(ni>=0 && ni<n && nj>=0 && nj<m && moveTime[ni][nj]!=-1){
+                    if(moveTime[ni][nj]>remove.time){
+                        if(remove.count%2==0)newTime = moveTime[ni][nj]+2;
+                        else newTime = moveTime[ni][nj]+1;
+                    }else{
+                        if(remove.count%2==0)newTime = remove.time+2;
+                        else newTime = remove.time+1;
+                    }
+                    pq.add(new Tuple(ni,nj,newTime, remove.count+1));
+                }
+            } 
+        }
+        return -1;
+    }
+}
